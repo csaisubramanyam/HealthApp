@@ -18,7 +18,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.valtech.health.app.entity.Availability;
 import com.valtech.health.app.entity.Doctor;
 import com.valtech.health.app.entity.Hospital;
 import com.valtech.health.app.entity.PatientDetails;
