@@ -1,6 +1,6 @@
 package com.valtech.health.app.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,14 +19,14 @@ public class PatientDetails {
 	@Column(nullable = false, unique = true)
 	private String name;
 	private int age;
-	private String doctorsname;
+
 	private String bloodgroup;
 	private String disease;
 	private String blood_pressure;
 	private int pulse_rate;
-	private LocalDate date;
+	private LocalDateTime pdate;
 
-	@ManyToOne(targetEntity = User.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity = User.class, cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", referencedColumnName = "id")
 	 private User users;
     
@@ -35,26 +35,26 @@ public class PatientDetails {
 		// TODO Auto-generated constructor stub
 	}
 
-	public PatientDetails(int id, String name, int age, String doctorsname, String bloodgroup, String disease,
+	public PatientDetails(int id, String name, int age, String bloodgroup, String disease,
 			String blood_pressure, int pulse_rate) {
 
 		super();
 		this.id = id;
 		this.name = name;
 		this.age = age;
-		this.doctorsname = doctorsname;
+		
 		this.bloodgroup = bloodgroup;
 		this.disease = disease;
 		this.blood_pressure = blood_pressure;
 		this.pulse_rate = pulse_rate;
 	}
 
-	public PatientDetails(String name, int age,String doctorsname, String bloodgroup, String disease,
+	public PatientDetails(String name, int age,String bloodgroup, String disease,
 			String blood_pressure, int pulse_rate) {
 		super();
 		this.name = name;
 		this.age = age;
-		this.doctorsname = doctorsname;
+	
 		this.bloodgroup = bloodgroup;
 		this.disease = disease;
 		this.blood_pressure = blood_pressure;
@@ -85,13 +85,13 @@ public class PatientDetails {
 		this.age = age;
 	}
 
-	public String getDoctorsname() {
+	/*public String getDoctorsname() {
 		return doctorsname;
 	}
 
 	public void setDoctorsname(String doctorsname) {
 		this.doctorsname = doctorsname;
-	}
+	}*/
 
 	public String getBloodgroup() {
 		return bloodgroup;
@@ -126,12 +126,13 @@ public class PatientDetails {
 	}
 
 	
-	public LocalDate getDate() {
-		return date;
+	
+	public LocalDateTime getPdate() {
+		return pdate;
 	}
 
-	public void setDate(LocalDate date) {
-		this.date = date;
+	public void setPdate(LocalDateTime pdate) {
+		this.pdate = pdate;
 	}
 
 	public User getUsers() {
@@ -145,7 +146,7 @@ public class PatientDetails {
 	@Override
 	public String toString() {
 		return "PatientDetails [id=" + id + ", name=" + name + ", age=" + age 
-				+ ", doctorsname=" + doctorsname + ", bloodgroup=" + bloodgroup + ", disease=" + disease
+				+ ", bloodgroup=" + bloodgroup + ", disease=" + disease
 				+ ", blood_pressure=" + blood_pressure + ", pulse_rate=" + pulse_rate + "]";
 	}
 

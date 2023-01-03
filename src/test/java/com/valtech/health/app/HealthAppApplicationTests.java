@@ -206,7 +206,7 @@ class HealthAppApplicationTests {
 	@Test
 	public void createPatient() {
 
-		PatientDetails p1 = new PatientDetails("priya", 23, "aaa", "o positive", "fever", "null", 95);
+		PatientDetails p1 = new PatientDetails("priya", 23, "o positive", "fever", "null", 95);
 		when(patientDetailsRepository.save(p1)).thenReturn(p1);
 		assertEquals(p1, patientDetailsServiceImpl.createPatientDetails(p1));
 
@@ -216,7 +216,7 @@ class HealthAppApplicationTests {
 	@Test
 	public void AllPatientDeatils() {
 		when(patientDetailsRepository.findAll())
-				.thenReturn(Stream.of(new PatientDetails("priya", 23, "aaa", "o positive", "fever", "null", 95))
+				.thenReturn(Stream.of(new PatientDetails("priya", 23,  "o positive", "fever", "null", 95))
 						.collect(Collectors.toList()));
 	}
 

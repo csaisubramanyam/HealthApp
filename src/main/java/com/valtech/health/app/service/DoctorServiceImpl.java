@@ -1,6 +1,6 @@
 package com.valtech.health.app.service;
 
-import java.util.List;
+import java.util.List; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -14,9 +14,9 @@ import com.valtech.health.app.repostitory.DoctorRepository;
 public class DoctorServiceImpl implements DoctorService {
 	@Autowired
 	private DoctorRepository doctorRepository;
-	
-	  @Autowired
-   private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	/* This method creates Doctor Comments */
 	@Override
@@ -38,6 +38,7 @@ public class DoctorServiceImpl implements DoctorService {
 		return doctorRepository.getReferenceById(id);
 
 	}
+
 	/* This method finds Doctor Comments by their name */
 	@Override
 	public Doctor findByNursename(String nursename) {
@@ -45,16 +46,14 @@ public class DoctorServiceImpl implements DoctorService {
 		return doctorRepository.findByNursename(nursename);
 	}
 	/* This method updates all the Doctor Comments */
-	/*@Override
-	public Doctor updateDoctorComments(Doctor d) {
-		// TODO Auto-generated method stub
-		return doctorRepository.save(d);
-	}*/
-	
-	@Override
-    public void updateDoctorComments(String doctor_comments, int id) {
-        String sql = "update doctor set doctor_comments= ? where id= ?";
-        jdbcTemplate.update(sql,doctor_comments,id);
-    }
+	/*
+	 * @Override public Doctor updateDoctorComments(Doctor d) { // TODO
+	 * Auto-generated method stub return doctorRepository.save(d); }
+	 */
 
+	@Override
+	public void updateDoctorComments(String doctor_comments, int id) {
+       String sql = "update DOCTORS_COMMENTS set doctor_comments= ? where id= ?";
+       jdbcTemplate.update(sql, doctor_comments, id);
+	}
 }

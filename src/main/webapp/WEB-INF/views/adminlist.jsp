@@ -173,7 +173,6 @@ body {
 							<thead>
 								<tr>
 									<th>Id</th>
-									<th>Hospital Availability</th>
 									<th>Hospital Name</th>
 									<th>Doctors Availability</th>
 									<th>Bed Availability</th>
@@ -184,7 +183,6 @@ body {
 								<c:forEach items="${am}" var="am">
 									<tr>
 										<td>${am.id}</td>
-										<td>${am.hospitalAvailability}</td>
 										<td>${am.hospitalName}</td>
 										<td>${am.doctorsAvailability}</td>
 										<td>${am.bedAvailability}</td>

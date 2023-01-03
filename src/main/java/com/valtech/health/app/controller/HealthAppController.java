@@ -23,6 +23,7 @@ import com.valtech.health.app.entity.Doctor;
 import com.valtech.health.app.entity.Hospital;
 import com.valtech.health.app.entity.PatientDetails;
 import com.valtech.health.app.entity.User;
+import com.valtech.health.app.model.PatientDetailsModel;
 import com.valtech.health.app.model.UserModel;
 import com.valtech.health.app.repostitory.UserRepository;
 import com.valtech.health.app.service.AvailabilityService;
@@ -58,45 +59,54 @@ public class HealthAppController {
 	@GetMapping("/aboutus")
 	public String aboutUS() {
 		logger.info("moving to about us page");
-		logger.debug("moved to aboutus");
 		return "aboutus";
 	}
 
 	/* This method creates Admin DashBoard */
 	@GetMapping("/admindashboard")
 	public String createnewadmin() {
-		logger.info("login to admindashboard");
-		logger.debug("login successfull");
+		logger.info("login to admin dashboard");
 		return "admindashboard";
 	}
 
 	/* This method helps us to check availability of hospital and doctors */
 	@GetMapping("/admin")
 	public String newambulance(Model m) {
-		logger.info("to get availability");
+		logger.info("admin has logged checking for availability");
 		List<Hospital> ha = hospitalService.getAllHospitals();
 		m.addAttribute("ha", ha);
-		logger.debug("updated successful");
+		logger.debug("updated successful " + ha);
 		return "admin";
 	}
 
 	/* This method helps us to check availability of hospital and doctors */
 	@PostMapping("/admin")
-	public String ambulance(@ModelAttribute Availability a, Model model,@RequestParam("hospitalName") String hospitalName) {
-		logger.info("create availability");
-		System.out.println(a.getHospitalName());
-		Hospital h=hospitalService.findByHospitalname(hospitalName);
+	public String ambulance(@ModelAttribute Availability a, Model model,
+			@RequestParam("hospitalName") String hospitalName) {
+		logger.info("admin created availability");
+		
+		Hospital h = hospitalService.findByHospitalname(hospitalName);
 		a.setHospital(h);
 		availabilityService.createAvailability(a);
 		if ((a.getDoctorsAvailability().equals("Yes")) && (a.getBedAvailability().equals("Yes"))) {
-			logger.info("check availability");
-			model.addAttribute("success", "Succesfully Updated");
-			logger.debug("available");
+			try {
+				model.addAttribute("success", "Succesfully Updated");
+
+				logger.debug("both doctor and bed are available " + a + "" + hospitalName);
+			} catch (Exception e) {
+				logger.error("doctor and bed are not available");
+				e.printStackTrace();
+				// model.addAttribute("error", e);
+			}
 			return "admin";
 		} else {
-			logger.info("rejected");
-			model.addAttribute("error", "No Availability");
-			logger.debug("not available");
+			try {
+				model.addAttribute("error", "No Availability");
+				logger.error("Not Available " + a + "" + hospitalName);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+				// model.addAttribute("error", e1);
+			}
 			return "admin";
 		}
 	}
@@ -105,17 +115,21 @@ public class HealthAppController {
 	@GetMapping("/hospital")
 	public String newhospital() {
 		logger.info("get hospital details");
-		logger.debug("hospital details received");
 		return "hospital";
 	}
 
 	/* To add hospital */
 	@PostMapping("/hospital")
 	public void hospital(@ModelAttribute Hospital h, Model model) {
-		logger.info("to add hospital details");
-		hospitalService.createHospital(h);
-		model.addAttribute("success", "Successfully Sent");
-		logger.debug("hospital details added");
+		try {
+			logger.info("to add hospital details");
+			hospitalService.createHospital(h);
+			model.addAttribute("success", "Successfully Sent");
+			logger.debug("hospital details added " + h);
+		} catch (Exception e) {
+			e.printStackTrace();
+			// model.addAttribute("error", e);
+		}
 	}
 
 	/* This method lists the hospitals */
@@ -123,34 +137,34 @@ public class HealthAppController {
 	public String hospitallist(Model model) {
 		logger.info("to get details");
 		model.addAttribute("h", hospitalService.getAllHospitals());
-		logger.debug("hospital details added");
+		logger.debug("hospital details added " + hospitalService.getAllHospitals());
 		return "hospitallist";
 	}
 
 	/* This method lists the availability */
 	@GetMapping("/adminlist")
 	public String Commentsambulance(Model model) {
-		logger.info("to get admin details");
+		logger.info(" getting admin details");
 		model.addAttribute("am", availabilityService.getAllAvailability());
-		logger.debug("admin details added");
+		logger.debug("admin details added " + availabilityService.getAllAvailability());
 		return "adminlist";
 	}
 
 	/* This method updates the hospital */
 	@PostMapping("/updatehospitals/{id}")
 	public ModelAndView saveUpdateHospitalDetails(@PathVariable("id") int id, @ModelAttribute Hospital h,
-			@RequestParam("submit") String submit) {
+			@RequestParam("submit") String submit, Model model) {
 		logger.info("update hospital details");
 		ModelAndView view = new ModelAndView("/hospitallist");
 		if (submit.equals("Cancel")) {
 			logger.info("no details are updated");
 			view.addObject("h", hospitalService.getAllHospitals());
-			logger.debug("cancelled");
+			logger.debug("cancelled " + h);
 			return view;
 		}
 		hospitalService.updateHospitalDetails(h);
 		view.addObject("h", hospitalService.getAllHospitals());
-		logger.info("updated hospital details");
+		logger.debug("updated hospital details " + h);
 		return view;
 	}
 
@@ -159,118 +173,107 @@ public class HealthAppController {
 	public String updateHospitalDetails(@PathVariable("id") int id, Model model) {
 		logger.info("update for hospital");
 		model.addAttribute("h", hospitalService.getHospitalById(id));
-		logger.debug("updated for hospital");
+		logger.debug("updated for hospital " + id);
 		return "updatehospital";
 	}
 
 	/* This method displays the nurse home page */
 	@GetMapping("/home")
 	public String home() {
-		logger.info("redirects to nurse");
-		logger.debug("redirection successfull");
+		logger.info("redirects to Home");
 		return "home";
 	}
 
 	@PostMapping("/login")
-	public String LoginUser(@RequestParam("username") String username,@RequestParam("password") String password, Model model, @ModelAttribute UserModel userModel) {
+	public String LoginUser(@RequestParam("username") String username, @RequestParam("password") String password,
+			Model model, @ModelAttribute UserModel userModel) {
 		String url;
 		User u = null;
+
+		if (userModel.getUsername().equals("admin") && userModel.getPassword().equals("admin")) {
+			logger.info("login into admin");
+			logger.debug("login successfull");
+			return "admindashboard";
+		}
 
 		try {
 			u = userService.findByUsername(userModel.getUsername());
 			if (u != null && bCryptPasswordEncoder.matches(password, u.getPassword())) {
-				logger.info("print user");
+				logger.debug("print user " + username);
 				System.out.println(u);
 				if (u.getRole().equals("NURSE")) {
 					logger.info("redirect to nurse dashboard");
+					logger.debug("NURSE username is  " + username);
 					System.out.println(u);
 					model.addAttribute("username", username);
 					int id = userService.getIdbyUsername((userModel.getUsername()));
 					url = "redirect:/dashboard/" + id;
-					logger.debug("successfully redirected to nurse dashboard");
 					return url;
-				}
-				else if (u.getRole().equals("DOCTOR")) {
+				} else if (u.getRole().equals("DOCTOR")) {
 					logger.info("redirect to doctor dashboard");
+					logger.debug("DOCTOR username is " + username);
 					System.out.println(u);
 					model.addAttribute("username", username);
 					int id = userService.getIdbyUsername((userModel.getUsername()));
 					url = "redirect:/doctordashboard/" + id;
-					logger.debug("successfully redirected to doctor dashboard");
+
 					return url;
 				}
-				else if (u.getRole().equals("ADMIN")) {
-					logger.info("redirect to admin dashboard");
-					System.out.println(u);
-					url = "redirect:/admindashboard/";
-					logger.debug("successfully redirected to admin dashboard");
-					return url;
-				}
+
 			}
+		} catch (Exception e) {
+
+			System.out.println();
+			model.addAttribute("error", "Entered username or password are not correct");
+			logger.error("details provided are incorrect");
+			return "login";
 		}
-		
 
-		catch (Exception e) {
-		
-		System.out.println();
-		model.addAttribute("error", "Entered username or password are not correct");
-		logger.debug("successfully moved to login");
-		return "login";
-	}
 		model.addAttribute("error", "Entered username or password are not correct");
 		return "login";
 	}
-
-
-
 
 	/* Login Page */
 	@GetMapping("/login")
 	public String login() {
 		logger.info("moving to login page");
-		logger.debug("successfully redirected to login");
 		return "login";
 	}
+
 	/* Register Page */
 	@PostMapping("/register")
 	public String registerUser(@RequestParam("email") String email, @Valid @ModelAttribute User u,
-			@ModelAttribute UserModel userModel, Model model,
-			BindingResult result) {
+			@ModelAttribute UserModel userModel, Model model, BindingResult result) {
 		logger.info("moving to register page");
 		User u1 = null;
 		try {
 
 			u1 = userRepo.findByEmail(email);
 		} catch (Exception e) {
+			logger.error("user already exists");
 			System.out.println("User already registered !!!");
 		}
 		if (u1 != null) {
 			logger.info("It will reject");
 			model.addAttribute("error", "User Already Registered");
-			logger.debug("return back to register page");
 			return "register";
 		}
-		
-			if (u.getRole().equals("NURSE")) {
-				logger.info("Checking if the role is nurse");
-				userService.createUser(u);
-				logger.debug("redirected to login page");
-				return "redirect:/login";
-			} else {
-				logger.info("Checking if the role is doctor ");
-				// doctorUserService.createDoctorUser(du);
-				userService.createUser(u);
-				logger.debug("Redirected to login");
-				return "redirect:/login";
-			}
-		
+
+		if (userModel.getPassword().equals(userModel.getConfirmpassword())) {
+
+			userService.createUser(u);
+			return "login";
+		} else {
+			model.addAttribute("error", "Password and Confirm Password doesnot match");
+			return "register";
+		}
 	}
 
 	/* Register Page */
 	@GetMapping("/register")
 	public String register(@ModelAttribute User u) {
 		logger.info("moving to register page");
-		logger.debug("Successfully moved to register page");
+		logger.debug("Successfully moved to register page with user " + u);
 		return "register";
 	}
 
@@ -279,43 +282,57 @@ public class HealthAppController {
 	public String createnew1(@PathVariable("id") int id, ModelMap model) {
 		logger.info("Moving to nurse dashboard");
 		User u = userService.getUsername(id);
+
 		model.addAttribute("add", u.getName());
-		logger.debug("Moved to nurse dashboard");
+		logger.debug("Moved to nurse dashboard with nurse " + u + " and id " + id);
 		return "dashboard";
 	}
 
 	/* This method helps to send patient details */
 	@GetMapping("/patientdetails")
-	public String newpatientdetails(Model m,@ModelAttribute User u) {
-		logger.info("Moving to patientdetails");
-		List<User> da = userService.getAllUsers();
-		List<User> daa = new ArrayList<>();
-		for (User user : da) {
-			if(user.getRole().equals("DOCTOR")){
-				daa.add(user);
-			}
-		}
+	public String newpatientdetails(Model m, @ModelAttribute User u) {
+		try {
+			logger.info("Moving to patientdetails");
+			List<User> da = userService.getAllUsers();
+			List<User> daa = new ArrayList<>();
 
-		m.addAttribute("daa", daa);
-		logger.debug("Moved to patientdetails");
+			for (User user : da) {
+				if (user.getRole().equals("DOCTOR")) {
+					daa.add(user);
+				}
+			}
+
+			m.addAttribute("daa", daa);
+			logger.debug("Moved to patient details " + u);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println(e);
+		}
 		return "patientdetails";
 	}
 
 	/* This method helps to send patient details */
 	@PostMapping("/patientdetails")
-	public String patientdetails(@ModelAttribute PatientDetails p, ModelAndView model, Model m,@RequestParam("doctorsname") String doctorsname) {
-		logger.info("Adding patientdetails");
-		String to = userService.getEmailByName(p.getDoctorsname());
-		String subject = "It's an emergency doctor!!";
-		String text = "Please access the website";
-		emailService.SendMail(to, subject, text);
-		m.addAttribute("name", p.getName());
-		
-		User u=userService.findByName(doctorsname);
-		p.setUsers(u);
-		patientService.createPatientDetails(p);
-		m.addAttribute("success", "Successfully Sent");
-		logger.debug("Successfully added");
+	public String patientdetails(@ModelAttribute PatientDetailsModel p, @ModelAttribute PatientDetails pd,
+			ModelAndView model, Model m, @RequestParam("doctorsname") String doctorsname) {
+		try {
+			logger.info("Adding patientdetails");
+
+			String to = userService.getEmailByName(p.getDoctorsname());
+			String subject = "It's an emergency doctor!!";
+			String text = "Please access the website";
+			emailService.SendMail(to, subject, text);
+			m.addAttribute("name", p.getName());
+			User u = userService.findByName(doctorsname);
+			pd.setUsers(u);
+
+			patientService.createPatientDetails(pd);
+			m.addAttribute("success", "Successfully Sent");
+			logger.debug("Successfully added " + pd);
+		} catch (Exception e) {
+			System.out.println(e);
+
+		}
 		return "patientdetails";
 	}
 
@@ -324,7 +341,7 @@ public class HealthAppController {
 	public String list(Model model) {
 		logger.info("Display patientdetails");
 		model.addAttribute("p", patientService.getAllPatientDetails());
-		logger.debug("Successfully displayed patientdetails");
+		logger.debug("Successfully displayed patientdetails " + patientService.getAllPatientDetails());
 		return "list";
 	}
 
@@ -340,7 +357,7 @@ public class HealthAppController {
 		}
 		patientService.updatePatientsDetails(p);
 		view.addObject("p", patientService.getAllPatientDetails());
-		logger.debug("Successfully updated patientdetails");
+		logger.debug("Successfully updated patientdetails" + p);
 		return view;
 	}
 
@@ -349,7 +366,7 @@ public class HealthAppController {
 	public String updatePatientsDetails(@PathVariable("id") int id, Model model) {
 		logger.info("It will display the updated patientdetails");
 		model.addAttribute("p", patientService.getPatientById(id));
-		logger.debug("Successfully displayed updatedpatientdetails");
+		logger.debug("Successfully displayed updatedpatientdetails " + patientService.getPatientById(id));
 		return "updatePatientDetails";
 	}
 
@@ -359,7 +376,7 @@ public class HealthAppController {
 		logger.info("Welcome page for doctor");
 		User du = userService.getUsername(id);
 		model.addAttribute("add", du.getName());
-		logger.debug("Displayed welcome page for doctor");
+		logger.debug("Displayed welcome page for doctor " + du);
 		return "doctordashboard";
 	}
 
@@ -369,7 +386,7 @@ public class HealthAppController {
 		List<User> ad = userService.getAllUsers();
 		List<User> daa = new ArrayList<>();
 		for (User user : ad) {
-			if(user.getRole().equals("NURSE")){
+			if (user.getRole().equals("NURSE")) {
 				daa.add(user);
 			}
 		}
@@ -380,17 +397,21 @@ public class HealthAppController {
 	/* This method helps to send doctor comments */
 	@PostMapping("/doctor")
 	public String doctorPatientdetails(@ModelAttribute Doctor d, Model m) {
-		logger.info("Send comment");
-		String to = userService.getEmailByName(d.getNursename());
-		String subject = "Doctor has been commented";
-		String text = "Please access the website";
-		emailService.SendMail(to, subject, text);
-		m.addAttribute("name", d.getNursename());
-		doctorService.createDoctor(d);
-		m.addAttribute("success", "Successfully Sent");
-		logger.debug("Successfully added");
-		return "doctor";
+		try {
+			logger.info("Sending comment by doctor");
 
+			String to = userService.getEmailByName(d.getNursename());
+			String subject = "Doctor has been commented";
+			String text = "Please access the website";
+			emailService.SendMail(to, subject, text);
+			m.addAttribute("name", d.getNursename());
+			doctorService.createDoctor(d);
+			m.addAttribute("success", "Successfully Sent");
+			logger.debug("Successfully commented by doctor " + d);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return "doctor";
 	}
 
 	/* This method helps to list the doctor comments */
@@ -398,20 +419,19 @@ public class HealthAppController {
 	public String doctorList(Model model) {
 
 		model.addAttribute("d", doctorService.getAllDoctorComments());
-
+		logger.debug("comment is " + doctorService.getAllDoctorComments());
 		return "doctorlist";
 	}
-
+	
 	@PostMapping("/updateDoctorComments/{id}")
     public ModelAndView saveUpdateDoctorComments(@PathVariable("id") int id, @ModelAttribute Doctor d,
-            @RequestParam("submit") String submit) throws Exception {
+            @RequestParam("submit") String submit,Model m) throws Exception {
         logger.info("It will update the doctor comments");
         ModelAndView view = new ModelAndView("/doctorlist");
         if (submit.equals("Cancel")) {
             view.addObject("d", doctorService.getAllDoctorComments());
             return view;
         }
-
         doctorService.updateDoctorComments(d.getDoctor_comments(), id);
         view.addObject("d", doctorService.getAllDoctorComments());
         logger.info("Successfully updated the doctor comments");
@@ -419,52 +439,72 @@ public class HealthAppController {
 
     }
 
+	/*@PostMapping("/updateDoctorComments/{id}")
+	public ModelAndView saveUpdateDoctorComments(@PathVariable("id") int id, @ModelAttribute Doctor d,
+			@RequestParam("submit") String submit, Model m) throws Exception {
+		logger.info("It will update the doctor comments");
+		ModelAndView view = new ModelAndView("/doctorlist");
+		if (submit.equals("Cancel")) {
+			try {
+				view.addObject("d", doctorService.getAllDoctorComments());
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+			return view;
+		}
+		doctorService.updateDoctorComments(d.getDoctor_comments(), id);
+		view.addObject("d", doctorService.getAllDoctorComments());
+		logger.info("Successfully updated the doctor comments");
+		logger.debug("updated doctor comment " + doctorService.getAllDoctorComments());
+		return view;
+	}*/
+
 	/* This method helps to update the doctor comments */
 	@GetMapping("/updateDoctorComments/{id}")
 	public String updateDoctorComments(@PathVariable("id") int id, Model model) {
 		logger.info("Update doctor comment");
 		model.addAttribute("d", doctorService.getDoctorCommentById(id));
-		logger.debug("Doctorscomment updated successfully");
+		logger.debug("Doctorscomment updated successfully " + doctorService.getDoctorCommentById(id));
 		return "updateDoctorComments";
 	}
 
 	/* This method helps to update the doctor comments */
 	@PostMapping("/forgotpassword")
-	public String saveNewPassword(@RequestParam("otp") int otp, Model model, @ModelAttribute UserModel userModel,
-			 @RequestParam("submit") String submit) {
+	public String saveNewPassword(@RequestParam("otp") int otp, @RequestParam("password") String password,
+		 Model model, @ModelAttribute UserModel userModel,
+			@RequestParam("submit") String submit) {
 		logger.info("Change the password");
 		User u = null;
 		try {
 			logger.info("sending OTP");
 			u = userService.findByOtp(otp);
-			logger.debug("OTP sent");
+			logger.debug("OTP sent" + u);
 		} catch (Exception e) {
-			logger.info("Error");
+			logger.error("Error " + e);
 			System.out.println("User not found !!!");
 			logger.info("OTP not sent");
 		}
 
 		if (u != null) {
 			logger.info("Return to login page");
-			if (u.getOtp() == otp){
+			if (u.getOtp() == otp) {
 				String encodedPassword = this.bCryptPasswordEncoder.encode(userModel.getPassword());
 				userModel.setPassword(encodedPassword);
 				userService.changePassword(u, encodedPassword);
+				logger.info("updated the password");
 
 				return "login";
 
 			}
 
 			else {
-				logger.info("Error");
 				model.addAttribute("error", "Password and Confirm Password doesnot match");
-				logger.debug("Password does not match");
+				logger.error("Password does not match");
 				return "forgotpassword";
 			}
 
 		}
 
-		
 		model.addAttribute("error", "Invalid Email");
 		return "forgotpassword";
 
@@ -474,7 +514,6 @@ public class HealthAppController {
 	@GetMapping("/forgotpassword")
 	public String updatePassword() {
 		logger.info("Changing password");
-		logger.debug("Successfully changed");
 		return "forgotpassword";
 	}
 
@@ -484,29 +523,26 @@ public class HealthAppController {
 		try {
 			u = userService.findByEmail(email);
 		} catch (Exception e) {
-			logger.info("Checking user");
+			logger.error("User not found");
 			System.out.println("User not found !!!");
-			logger.debug("USer not found");
+			logger.debug("user is " + email);
 		}
 		int otpgenerated = (int) Math.floor(Math.random() * 1000000);
 		if (u != null) {
 			System.out.println("test1");
 			userService.setOtp(u, otpgenerated);
 		}
-		
 		String to = email;
 		String subject = "OTP Generation";
 		String text = "OTP is: " + otpgenerated;
 		emailService.SendMail(to, subject, text);
-		System.out.println(text);
-
+		//System.out.println(text);
 		return "forgotpassword";
 	}
 
 	@GetMapping("/sendotp")
 	public String Passwordverify() {
 		logger.info("Sending OTP");
-		logger.debug("Successfully sent");
 		return "sendotp";
 	}
 
@@ -515,7 +551,7 @@ public class HealthAppController {
 	public String Comments(Model model) {
 		logger.info("Showing commentlist");
 		model.addAttribute("d", doctorService.getAllDoctorComments());
-		logger.debug("Successfully displayed");
+		logger.debug("Successfully displayed " + doctorService.getAllDoctorComments());
 		return "commentlist";
 	}
 
@@ -523,8 +559,6 @@ public class HealthAppController {
 	@GetMapping("/logout")
 	public String logout() {
 		logger.info("Logging out");
-		logger.debug("Successfully logged out");
 		return "home";
 	}
-
 }

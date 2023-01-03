@@ -271,6 +271,8 @@ form .pass-link a:hover, form .signup-link a:hover {
 						<label>New Password</label>
 					</div>
 					
+					
+					
 						<div class="field">
 							<input type="submit" value="RESET PASSWORD" name="submit" />
 						</div>

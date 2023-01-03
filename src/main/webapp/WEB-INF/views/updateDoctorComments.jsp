@@ -246,7 +246,7 @@ form .pass-link a:hover, form .signup-link a:hover {
 
 					<div class="field">
 						<input type="text" name="nursename" value="${d.nursename}" />
-						<label>Doctor's Name</label>
+						<label>Nurse's Name</label>
 					</div>
 					<div class="field">
 						<input type="text" name="patients_name" value="${d.patients_name}" />
@@ -258,6 +258,7 @@ form .pass-link a:hover, form .signup-link a:hover {
 							value="${d.doctor_comments}" /> <label>Doctors Comment</label>
 					</div>
 
+					
 					<div class="field">
 						<input type="submit" name="submit" value="Save" />
 					</div>

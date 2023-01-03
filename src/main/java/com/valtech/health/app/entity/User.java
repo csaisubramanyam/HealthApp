@@ -21,7 +21,7 @@ public class User {
 	private int id;
 	@NotBlank(message = "Name cannot be empty!!")
 	private String name;
-	private String number;
+	private String pnumber;
 	@Column(nullable = false, unique = true)
 	private String email;
 	@Column(nullable = false, unique = true)
@@ -38,11 +38,11 @@ public class User {
 		super();
 	}
 
-	public User(String name, String number, String email, String username, String password, String role, int otp) {
+	public User(String name, String pnumber, String email, String username, String password, String role, int otp) {
 		super();
 
 		this.name = name;
-		this.number = number;
+		this.pnumber = pnumber;
 		this.email = email;
 		this.username = username;
 		this.password = password;
@@ -50,12 +50,12 @@ public class User {
 		this.otp = otp;
 	}
 
-	public User(int id, String name, String number, String email, String username, String password, String role,
+	public User(int id, String name, String pnumber, String email, String username, String password, String role,
 			int otp) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.number = number;
+		this.pnumber = pnumber;
 		this.email = email;
 		this.username = username;
 		this.password = password;
@@ -79,12 +79,13 @@ public class User {
 		this.name = name;
 	}
 
-	public String getNumber() {
-		return number;
+	
+	public String getPnumber() {
+		return pnumber;
 	}
 
-	public void setNumber(String number) {
-		this.number = number;
+	public void setPnumber(String pnumber) {
+		this.pnumber = pnumber;
 	}
 
 	public String getEmail() {
@@ -127,8 +128,6 @@ public class User {
 		this.otp = otp;
 	}
 
-	
-
 	public Set<PatientDetails> getPatientDetails() {
 		return patientDetails;
 	}
@@ -139,7 +138,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", number=" + number + ", email=" + email + ", username="
+		return "User [id=" + id + ", name=" + name + ", pnumber=" + pnumber + ", email=" + email + ", username="
 				+ username + ", password=" + password + ", role=" + role + "]";
 	}
 

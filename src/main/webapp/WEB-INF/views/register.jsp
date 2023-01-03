@@ -254,7 +254,7 @@ form .pass-link a:hover, form .signup-link a:hover {
 							title="Name must be between 5-10 characters!!" /> <label>Name</label>
 					</div>
 					<div class="field">
-						<input name="number" type="text" pattern="(0/91)?[6-9][0-9]{9}"
+						<input name="pnumber" type="text" pattern="(0/91)?[6-9][0-9]{9}"
 							required title="Invalid Phone number !!" /> <label>Phone
 							Number</label>
 					</div>
@@ -271,12 +271,21 @@ form .pass-link a:hover, form .signup-link a:hover {
 
 					<div class="field">
 						<input name="password" type="password"
-							pattern="[A-Za-z0-9#@$&]{3,10}" required  id="password" name="pass" 
+							pattern="[A-Za-z0-9#@$&]{3,10}" required id="password" name="pass" 
 							title="Password must be between 3-10 characters and type only valid characters !!" />
 						<label>Password</label>
 						
 					</div>
+						<div class="field">
+
+						<input name="confirmpassword" type="password"
+							pattern="[A-Za-z0-9#@$&]{3,10}" required id="password"
+							title="Password must be between 3-10 characters and type only valid characters !!" />
+						<label>Confirm Password </label>
+					</div>
 					</br>
+					
+					
 
 					<div class="dropdown-content">
 						<select id="vehicleList" name="role" required  style="width: 300px;">
@@ -285,7 +294,6 @@ form .pass-link a:hover, form .signup-link a:hover {
 
 							<option value="DOCTOR">DOCTOR</option>
 							<option value="NURSE">NURSE</option>
-							<option value="ADMIN">ADMIN</option>
 						</select>
 					</div>
 

@@ -1,6 +1,6 @@
 package com.valtech.health.app.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,8 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 	/* This method creates Patient Details */
 	@Override
 	public PatientDetails createPatientDetails(PatientDetails p) {
-		p.setDate(LocalDate.now());
+		//p.setDate(LocalDate.now());
+		p.setPdate(LocalDateTime.now());
 		return patientDetailsRepository.save(p);
 	}
 
@@ -41,6 +42,7 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 	@Transactional(propagation = Propagation.REQUIRED)
 	public PatientDetails updatePatientsDetails(PatientDetails p) {
 		// TODO Auto-generated method stub
+		p.setPdate(LocalDateTime.now());
 		return patientDetailsRepository.save(p);
 	}
 }

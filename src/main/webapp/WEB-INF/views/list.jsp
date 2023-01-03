@@ -111,7 +111,7 @@ th {
 					<th>Pulse Rate</th>
 					<th>Blood Group</th>
 					<th>Blood Pressure</th>
-					<th>Doctors Name</th>
+					<th>Date</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
@@ -125,7 +125,7 @@ th {
 						<td>${p.pulse_rate}</td>
 						<td>${p.bloodgroup}</td>
 						<td>${p.blood_pressure}</td>
-						<td>${p.doctorsname}</td>
+						<td>${p.pdate}</td>
 						
 						<td><a href="/updatePatientDetails/${p.id}"
 							class="btn btn-primary">Update</a>                    </td>

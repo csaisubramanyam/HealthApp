@@ -9,12 +9,13 @@ public class UserModel {
 
 	@NotBlank(message = "Name cannot be empty!!")
 	private String name;
-	private String number;
+	private String pnumber;
 	@Column(nullable = false, unique = true)
 	private String email;
 	@Column(nullable = false, unique = true)
 	private String username;
 	private String password;
+	private String confirmpassword;
 	private String role;
 	@Column(nullable = true)
 	private int otp;
@@ -23,31 +24,50 @@ public class UserModel {
 		super();
 	}
 
-	public UserModel(String name, String number, String email, String username, String password,
-			String role, int otp) {
-		super();
-		this.name = name;
-		this.number = number;
-		this.email = email;
-		this.username = username;
-		this.password = password;
-		this.role = role;
-		this.otp = otp;
-	}
-
-	public UserModel(int id,  String name, String number, String email,
-			String username, String password, String role, int otp) {
+	
+	public UserModel(int id,String name, String pnumber, String email,
+			String username, String password, String confirmpassword, String role, int otp) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.number = number;
+		this.pnumber = pnumber;
 		this.email = email;
 		this.username = username;
 		this.password = password;
+		this.confirmpassword = confirmpassword;
 		this.role = role;
 		this.otp = otp;
 	}
 
+	public UserModel(String name, String pnumber, String email,
+			String username, String password, String confirmpassword, String role, int otp) {
+		super();
+		this.name = name;
+		this.pnumber = pnumber;
+		this.email = email;
+		this.username = username;
+		this.password = password;
+		this.confirmpassword = confirmpassword;
+		this.role = role;
+		this.otp = otp;
+	}
+
+	public String getPnumber() {
+		return pnumber;
+	}
+
+	public void setPnumber(String pnumber) {
+		this.pnumber = pnumber;
+	}
+
+	public String getConfirmpassword() {
+		return confirmpassword;
+	}
+
+
+	public void setConfirmpassword(String confirmpassword) {
+		this.confirmpassword = confirmpassword;
+	}
 	public int getId() {
 		return id;
 	}
@@ -64,13 +84,6 @@ public class UserModel {
 		this.name = name;
 	}
 
-	public String getNumber() {
-		return number;
-	}
-
-	public void setNumber(String number) {
-		this.number = number;
-	}
 
 	public String getEmail() {
 		return email;
@@ -115,7 +128,7 @@ public class UserModel {
 
 	@Override
 	public String toString() {
-		return "UserModel [id=" + id + ", name=" + name + ", number=" + number + ", email=" + email + ", username="
+		return "UserModel [id=" + id + ", name=" + name + ", number=" + pnumber + ", email=" + email + ", username="
 				+ username + ", password=" + password  + ", role=" + role
 				+ ", otp=" + otp + "]";
 	}

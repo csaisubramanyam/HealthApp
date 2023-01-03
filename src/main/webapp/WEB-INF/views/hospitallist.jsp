@@ -113,16 +113,15 @@ body {
 				<tr>
 					<th>Id</th>
 					<th>Hospital Name</th>
-					<th>Location</th>
 					<th>Contact Number</th>
-					<th>Actions</th>
+					<th>Update</th>
 
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${h}" var="h">
 					<tr>
-						<%--  <td><a href="/updatePatientDetails/${p.id}">${p.id}</a></td>  --%>
+				
 						<td>${h.id}</td>
 						<td>${h.hospitalname}</td>
 						<td>${h.contactnumber}</td>

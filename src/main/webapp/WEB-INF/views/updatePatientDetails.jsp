@@ -249,10 +249,7 @@ form .pass-link a:hover, form .signup-link a:hover {
 						<input type="text" name="blood_pressure"
 							value="${p.blood_pressure}" /> <label>Blood Pressure</label>
 					</div>
-					<div class="field">
-						<input type="text" name="doctorsname" value="${p.doctorsname}" />
-						<label>Doctors Name</label>
-					</div>
+					
 
 					<div class="field">
 						<input type="submit" name="submit" value="Save" />

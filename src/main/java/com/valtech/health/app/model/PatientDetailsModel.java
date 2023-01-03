@@ -11,7 +11,7 @@ public class PatientDetailsModel {
 	private String disease;
 	private String blood_pressure;
 	private int pulse_rate;
-	private LocalDate date;
+	private LocalDate ddate;
 
 	public PatientDetailsModel() {
 		super();
@@ -109,11 +109,11 @@ public class PatientDetailsModel {
 	}
 
 	public LocalDate getDate() {
-		return date;
+		return ddate;
 	}
 
-	public void setDate(LocalDate date) {
-		this.date = date;
+	public void setDate(LocalDate ddate) {
+		this.ddate = ddate;
 	}
 
 	@Override

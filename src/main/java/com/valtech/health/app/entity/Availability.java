@@ -28,16 +28,6 @@ public class Availability {
 	}
 
 	
-	public Availability(int id, String hospitalName, String location, String doctorsAvailability,
-			String bedAvailability, Hospital hospital) {
-		super();
-		this.id = id;
-		this.hospitalName = hospitalName;
-		this.location = location;
-		this.doctorsAvailability = doctorsAvailability;
-		this.bedAvailability = bedAvailability;
-		this.hospital = hospital;
-	}
 	
 
 	public Availability(String hospitalName, String location, String doctorsAvailability, String bedAvailability,
@@ -51,13 +41,20 @@ public class Availability {
 	}
 
 
-	public int getId() {
-		return id;
+
+
+	public Availability(int id, String hospitalName, String location, String doctorsAvailability,
+			String bedAvailability, Hospital hospital) {
+		super();
+		this.id = id;
+		this.hospitalName = hospitalName;
+		this.location = location;
+		this.doctorsAvailability = doctorsAvailability;
+		this.bedAvailability = bedAvailability;
+		this.hospital = hospital;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
+
 
 
 	public String getHospitalName() {
@@ -67,8 +64,14 @@ public class Availability {
 	public void setHospitalName(String hospitalName) {
 		this.hospitalName = hospitalName;
 	}
-	
-	
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}	
 
 	public String getLocation() {
 		return location;
@@ -105,11 +108,10 @@ public class Availability {
 
 	@Override
 	public String toString() {
-		return "Ambulance [id=" + id + ",  hospitalName="
-				+ hospitalName + ", location=" + location + ", doctorsAvailability=" + doctorsAvailability
-				+ ", bedAvailability=" + bedAvailability + "]";
+		return "Availability [id=" + id + ", hospitalName=" + hospitalName + ", location=" + location
+				+ ", doctorsAvailability=" + doctorsAvailability + ", bedAvailability=" + bedAvailability
+				+ ", hospital=" + hospital + "]";
 	}
 
-
-
+	
 }
